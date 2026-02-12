@@ -13,9 +13,19 @@ You can edit the accuracy of the values from the project.
 
 ## Features
 - Real-time motion data display (Roll, Pitch, Yaw, Rotation Rate, Acceleration, Gravity)
+- **3D Visualization**: Live 3D object that rotates in real-time with AirPods movements
 - **OpenTrack UDP Integration**: Stream motion data to OpenTrack running on a PC
 - **Reset Orientation**: Set the current head position as center/neutral
 - Persistent settings (IP address and port saved between sessions)
+
+## 3D Visualization
+
+The app includes a real-time 3D visualization that displays a colorful cube rotating with your head movements. The cube:
+- Uses the exact same rotation values (yaw, pitch, roll) that are sent via UDP
+- Updates at ~60Hz for smooth, responsive visualization
+- Features colored faces (red, blue, green, yellow, orange, purple) to easily see rotation
+- Helps verify tracking accuracy before using with OpenTrack
+- Provides immediate visual feedback of head orientation
 
 ## Requirements
 - Xcode
