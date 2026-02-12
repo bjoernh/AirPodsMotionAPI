@@ -32,7 +32,7 @@ You can edit the accuracy of the values from the project.
 2. Open OpenTrack
 3. Set **Tracker** to `UDP sender` (or `FreePIE UDP`)
 4. Set **Port** to `5555` (or any port you prefer)
-5. Set **Protocol** to `freetrack 2.0` or appropriate output for your game/simulator
+5. Set **Protocol** to `FreeTrack 2.0` or appropriate output for your game/simulator
 6. Configure **Mappings** as needed for your application
 7. Open the port in your firewall if necessary
 8. Click **Start** in OpenTrack

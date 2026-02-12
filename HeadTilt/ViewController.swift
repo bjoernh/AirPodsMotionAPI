@@ -46,7 +46,7 @@ class ViewController: UIViewController, CMHeadphoneMotionManagerDelegate {
             (deviceMotion, error) -> Void in
          
             if let motion = deviceMotion {
-                var attitude = motion.attitude
+                let attitude = motion.attitude
                 
                 // Apply reference frame if orientation was reset
                 if let reference = referenceAttitude {
@@ -157,7 +157,10 @@ class ViewController: UIViewController, CMHeadphoneMotionManagerDelegate {
         
         // Setup UDP connection
         let host = NWEndpoint.Host(ipAddress)
-        let portEndpoint = NWEndpoint.Port(rawValue: port)!
+        guard let portEndpoint = NWEndpoint.Port(rawValue: port) else {
+            showAlert(title: "Error", message: "Invalid port number")
+            return
+        }
         
         udpConnection = NWConnection(host: host, port: portEndpoint, using: .udp)
         
@@ -193,8 +196,11 @@ class ViewController: UIViewController, CMHeadphoneMotionManagerDelegate {
         
         // Convert degrees to radians for OpenTrack (FreePIE UDP protocol)
         // OpenTrack expects: yaw, pitch, roll, x, y, z (all as floats)
-        let yawRad = Float(-yaw * .pi / 180.0)  // Negate for correct direction
-        let pitchRad = Float(-pitch * .pi / 180.0)  // Negate for correct direction
+        // Negate yaw and pitch to match OpenTrack's coordinate system where:
+        // - Positive yaw = left turn, negative = right turn
+        // - Positive pitch = look down, negative = look up
+        let yawRad = Float(-yaw * .pi / 180.0)
+        let pitchRad = Float(-pitch * .pi / 180.0)
         let rollRad = Float(roll * .pi / 180.0)
         
         // Position data (x, y, z) - set to 0 for rotation-only tracking
