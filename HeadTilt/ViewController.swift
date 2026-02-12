@@ -152,9 +152,10 @@ class ViewController: UIViewController, CMHeadphoneMotionManagerDelegate {
         box.materials = materials
         
         // Create node for the box
-        cubeNode = SCNNode(geometry: box)
-        cubeNode?.position = SCNVector3(x: 0, y: 0, z: 0)
-        scene.rootNode.addChildNode(cubeNode!)
+        let node = SCNNode(geometry: box)
+        node.position = SCNVector3(x: 0, y: 0, z: 0)
+        cubeNode = node
+        scene.rootNode.addChildNode(node)
         
         // Add ambient light
         let ambientLight = SCNNode()
