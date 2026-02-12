@@ -298,13 +298,14 @@ class ViewController: UIViewController, CMHeadphoneMotionManagerDelegate {
         let z: Float = 0.0
         
         // Create byte array for UDP packet (6 floats = 24 bytes)
+        // Convert floats to little-endian byte representation via bit pattern
         var data = Data()
-        withUnsafeBytes(of: yawRad.littleEndian) { data.append(contentsOf: $0) }
-        withUnsafeBytes(of: pitchRad.littleEndian) { data.append(contentsOf: $0) }
-        withUnsafeBytes(of: rollRad.littleEndian) { data.append(contentsOf: $0) }
-        withUnsafeBytes(of: x.littleEndian) { data.append(contentsOf: $0) }
-        withUnsafeBytes(of: y.littleEndian) { data.append(contentsOf: $0) }
-        withUnsafeBytes(of: z.littleEndian) { data.append(contentsOf: $0) }
+        withUnsafeBytes(of: yawRad.bitPattern.littleEndian) { data.append(contentsOf: $0) }
+        withUnsafeBytes(of: pitchRad.bitPattern.littleEndian) { data.append(contentsOf: $0) }
+        withUnsafeBytes(of: rollRad.bitPattern.littleEndian) { data.append(contentsOf: $0) }
+        withUnsafeBytes(of: x.bitPattern.littleEndian) { data.append(contentsOf: $0) }
+        withUnsafeBytes(of: y.bitPattern.littleEndian) { data.append(contentsOf: $0) }
+        withUnsafeBytes(of: z.bitPattern.littleEndian) { data.append(contentsOf: $0) }
         
         connection.send(content: data, completion: .contentProcessed { error in
             if let error = error {
