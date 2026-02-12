@@ -113,8 +113,15 @@
                                     </button>
                                 </subviews>
                             </stackView>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="scene-view" customClass="SCNView">
+                                <rect key="frame" x="32" y="378" width="326" height="200"/>
+                                <color key="backgroundColor" systemColor="systemGray6Color"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="200" id="scene-height"/>
+                                </constraints>
+                            </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Wear your AirPods!" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="0Pp-RS-3Ly">
-                                <rect key="frame" x="32" y="378" width="326" height="424"/>
+                                <rect key="frame" x="32" y="590" width="326" height="212"/>
                                 <color key="backgroundColor" systemColor="systemBackgroundColor"/>
                                 <color key="textColor" systemColor="labelColor"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="18"/>
@@ -136,7 +143,11 @@
                             <constraint firstItem="button-stack" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="32" id="button-leading"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="button-stack" secondAttribute="trailing" constant="32" id="button-trailing"/>
                             
-                            <constraint firstItem="0Pp-RS-3Ly" firstAttribute="top" secondItem="button-stack" secondAttribute="bottom" constant="12" id="text-top"/>
+                            <constraint firstItem="scene-view" firstAttribute="top" secondItem="button-stack" secondAttribute="bottom" constant="12" id="scene-top"/>
+                            <constraint firstItem="scene-view" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="32" id="scene-leading"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="scene-view" secondAttribute="trailing" constant="32" id="scene-trailing"/>
+                            
+                            <constraint firstItem="0Pp-RS-3Ly" firstAttribute="top" secondItem="scene-view" secondAttribute="bottom" constant="12" id="text-top"/>
                             <constraint firstItem="0Pp-RS-3Ly" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="32" id="text-leading"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="trailing" secondItem="0Pp-RS-3Ly" secondAttribute="trailing" constant="32" id="text-trailing"/>
                             <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="0Pp-RS-3Ly" secondAttribute="bottom" constant="8" id="text-bottom"/>
@@ -147,6 +158,7 @@
                         <outlet property="ipAddressTextField" destination="ip-field" id="ip-outlet"/>
                         <outlet property="portTextField" destination="port-field" id="port-outlet"/>
                         <outlet property="statusLabel" destination="status-label" id="status-outlet"/>
+                        <outlet property="sceneView" destination="scene-view" id="scene-outlet"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
@@ -163,6 +175,9 @@
         </systemColor>
         <systemColor name="systemBlueColor">
             <color red="0.0" green="0.47843137254901963" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </systemColor>
+        <systemColor name="systemGray6Color">
+            <color red="0.94901960784313721" green="0.94901960784313721" blue="0.96862745098039216" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
         </systemColor>
         <systemColor name="systemOrangeColor">
             <color red="1" green="0.58431372549019611" blue="0.0" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>

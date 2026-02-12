@@ -8,6 +8,7 @@
 import UIKit
 import CoreMotion
 import Network
+import SceneKit
 
 class ViewController: UIViewController, CMHeadphoneMotionManagerDelegate {
 
@@ -15,16 +16,21 @@ class ViewController: UIViewController, CMHeadphoneMotionManagerDelegate {
     @IBOutlet weak var ipAddressTextField: UITextField!
     @IBOutlet weak var portTextField: UITextField!
     @IBOutlet weak var statusLabel: UILabel!
+    @IBOutlet weak var sceneView: SCNView!
     
     let manager = CMHeadphoneMotionManager()
     var udpConnection: NWConnection?
     var referenceAttitude: CMAttitude?
     var isStreamingEnabled = false
+    var cubeNode: SCNNode?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do any additional setup after loading the view.
         manager.delegate = self
+        
+        // Setup 3D scene
+        setup3DScene()
         
         // Load saved settings
         if let savedIP = UserDefaults.standard.string(forKey: "ipAddress") {
@@ -66,6 +72,9 @@ class ViewController: UIViewController, CMHeadphoneMotionManagerDelegate {
                     sendUDPData(yaw: yaw, pitch: pitch, roll: roll)
                 }
                 
+                // Update 3D object rotation
+                update3DRotation(yaw: yaw, pitch: pitch, roll: roll)
+                
                 DispatchQueue.main.async { [self] in
                     var str = "Attitude:\n"
                     str += degreeText("Roll", roll)
@@ -101,6 +110,85 @@ class ViewController: UIViewController, CMHeadphoneMotionManagerDelegate {
         str += String(format: "Y: %.1f\n", abs(y))
         str += String(format: "Z: %.1f\n", abs(z))
         return str
+    }
+    
+    // MARK: - 3D Scene Setup
+    
+    func setup3DScene() {
+        // Create a new scene
+        let scene = SCNScene()
+        sceneView.scene = scene
+        
+        // Set background color
+        sceneView.backgroundColor = UIColor.systemGray6
+        
+        // Allow user to interact with the scene
+        sceneView.allowsCameraControl = false
+        
+        // Show statistics such as fps
+        sceneView.showsStatistics = false
+        
+        // Configure lighting
+        sceneView.autoenablesDefaultLighting = true
+        
+        // Create camera
+        let cameraNode = SCNNode()
+        cameraNode.camera = SCNCamera()
+        cameraNode.position = SCNVector3(x: 0, y: 0, z: 5)
+        scene.rootNode.addChildNode(cameraNode)
+        
+        // Create a 3D box
+        let box = SCNBox(width: 1.5, height: 1.0, length: 0.5, chamferRadius: 0.05)
+        
+        // Create material for the box with different colors on each face
+        let materials = [
+            createMaterial(color: .systemRed),      // Front
+            createMaterial(color: .systemBlue),     // Right
+            createMaterial(color: .systemGreen),    // Back
+            createMaterial(color: .systemYellow),   // Left
+            createMaterial(color: .systemOrange),   // Top
+            createMaterial(color: .systemPurple)    // Bottom
+        ]
+        box.materials = materials
+        
+        // Create node for the box
+        cubeNode = SCNNode(geometry: box)
+        cubeNode?.position = SCNVector3(x: 0, y: 0, z: 0)
+        scene.rootNode.addChildNode(cubeNode!)
+        
+        // Add ambient light
+        let ambientLight = SCNNode()
+        ambientLight.light = SCNLight()
+        ambientLight.light?.type = .ambient
+        ambientLight.light?.color = UIColor.white
+        ambientLight.light?.intensity = 300
+        scene.rootNode.addChildNode(ambientLight)
+    }
+    
+    func createMaterial(color: UIColor) -> SCNMaterial {
+        let material = SCNMaterial()
+        material.diffuse.contents = color
+        material.specular.contents = UIColor.white
+        material.shininess = 0.5
+        return material
+    }
+    
+    func update3DRotation(yaw: Double, pitch: Double, roll: Double) {
+        // Update the cube rotation on the main thread
+        // Use the same values that are sent via UDP
+        DispatchQueue.main.async { [weak self] in
+            guard let cubeNode = self?.cubeNode else { return }
+            
+            // Convert degrees to radians
+            // Apply rotations to match the orientation being sent via UDP
+            let yawRad = -yaw * .pi / 180.0    // Negate for correct direction
+            let pitchRad = -pitch * .pi / 180.0 // Negate for correct direction  
+            let rollRad = roll * .pi / 180.0
+            
+            // Apply Euler angles to the cube
+            // Order: yaw (Y-axis), pitch (X-axis), roll (Z-axis)
+            cubeNode.eulerAngles = SCNVector3(pitchRad, yawRad, rollRad)
+        }
     }
     
     func headphoneMotionManagerDidConnect(_ manager: CMHeadphoneMotionManager) {
